@@ -1,5 +1,4 @@
-import { Project } from "ts-morph";
-import * as ts from "typescript";
+import { Project, SyntaxKind } from "ts-morph";
 
 const project = new Project();
 project.addSourceFilesAtPaths("sample/**/*.ts");
@@ -8,13 +7,13 @@ const report: Record<string, any> = {};
 
 for (const sourceFile of project.getSourceFiles()) {
   const importsFromTnApi = sourceFile.getImportDeclarations().filter(decl =>
-    decl.getModuleSpecifierValue() === "tn-api"
+      decl.getModuleSpecifierValue() === "tn-api"
   );
 
   const tnApiImports = new Set(
-    importsFromTnApi.flatMap(decl =>
-      decl.getNamedImports().map(named => named.getName())
-    )
+      importsFromTnApi.flatMap(decl =>
+          decl.getNamedImports().map(named => named.getName())
+      )
   );
 
   const classes = sourceFile.getClasses();
@@ -38,28 +37,26 @@ for (const sourceFile of project.getSourceFiles()) {
       }
     }
 
-    // Now walk method bodies and look for method calls on those injected vars
+    // Walk method bodies for service method calls
     const usage: Record<string, Set<string>> = {};
     for (const method of cls.getMethods()) {
       method.forEachDescendant(node => {
-        if (node.getKind() === ts.SyntaxKind.CallExpression) {
-          const callExpr = node.asKind(ts.SyntaxKind.CallExpression);
+        if (node.getKind() === SyntaxKind.CallExpression) {
+          const callExpr = node.asKind(SyntaxKind.CallExpression);
           if (!callExpr) return;
 
           const expr = callExpr.getExpression();
+          if (!expr || expr.getKind() !== SyntaxKind.PropertyAccessExpression) return;
 
-          if (expr.getKindName() === "PropertyAccessExpression") {
-            const propAccess = expr.asKindOrThrow(ts.SyntaxKind.PropertyAccessExpression);
-            const serviceInstance = propAccess.getExpression().getText();
-            const methodName = propAccess.getName();
+          const serviceInstance = expr.getFirstChildByKind(SyntaxKind.Identifier)?.getText();
+          const methodName = expr.getLastChildByKind(SyntaxKind.Identifier)?.getText();
 
-            const serviceClass = tnApiInjected[serviceInstance];
-            if (serviceClass) {
-              if (!usage[serviceClass]) {
-                usage[serviceClass] = new Set();
-              }
-              usage[serviceClass].add(methodName);
+          const serviceClass = serviceInstance && tnApiInjected[serviceInstance];
+          if (serviceClass && methodName) {
+            if (!usage[serviceClass]) {
+              usage[serviceClass] = new Set();
             }
+            usage[serviceClass].add(methodName);
           }
         }
       });
@@ -69,7 +66,7 @@ for (const sourceFile of project.getSourceFiles()) {
       report[className] = {
         file: sourceFile.getFilePath(),
         services: Object.fromEntries(
-          Object.entries(usage).map(([k, v]) => [k, Array.from(v)])
+            Object.entries(usage).map(([k, v]) => [k, Array.from(v)])
         )
       };
     }
