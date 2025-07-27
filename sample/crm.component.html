@@ -1,0 +1,13 @@
+<div [ngClass]="appLinkService.isActive ? 'boundsIntegrated' : 'bounds'">
+    <div fxLayout="column" fxFlexFill>
+        <div fxFlex="{{headerHeight}}">
+        </div>
+            <div fxFlex="100%">
+            <div fxLayout="row" fxFlexFill>
+                <div fxFlex="{{designVariables.mainColumnsVariables.controlColumnFlexWidthWithNavColumn}}">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
