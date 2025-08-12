@@ -1,0 +1,339 @@
+<app-page-layout
+    *ngIf="!isModal"
+    [isGridPage]="false"
+    (onBackNavigation)="cancel(false)"
+    [canView]="canView()"
+    [isLoading]="!addressLoaded"
+    [isOverlay]="true"
+    [navigationText]="backText"
+    [bodyTemplate]="bodyEdit"
+    [actionsRowTemplate]="actionsRow">
+</app-page-layout>
+
+<app-modal
+    *ngIf="isModal"
+    modalOverlayBackText="Back to Add Alternate Address"
+    [isModalOverlay]="true"
+    [isNestedModal]="true"
+    (hidden)="cancel()">
+    <ng-container body>
+        <div class="h-full">
+            <ng-container *ngTemplateOutlet="bodyEdit"></ng-container>
+        </div>
+    </ng-container>
+    <ng-container footer>
+        <ng-container *ngTemplateOutlet="actionsRow"></ng-container>
+    </ng-container>
+</app-modal>
+
+<ng-template #bodyEdit>
+    <form #editForm="ngForm">
+        <div>
+            <div *ngIf="!isModal">
+                <div *ngIf="entity.Id < 0" fxFlex="100%">
+                    <h1 class="crm-edit-page-h1">Adding New Address</h1>
+                    <span class="label">OWNED BY: {{ getEntityConstituentDisplayName() }}</span>
+                </div>
+                <div *ngIf="entity.Id >= 0" fxFlex="100%">
+                    <h1 class="crm-edit-page-h1">
+                        {{ getEditingOrViewing() }} Address: {{ entity.AddressType?.Description }}
+                    </h1>
+                    <span class="label">OWNED BY: {{ getEntityConstituentDisplayName() }}</span>
+                </div>
+                <div class="m-top-15 validated" fxFlex="1 1 auto">
+                    <app-tess-switch
+                        [(ngModel)]="entity.Inactive"
+                        [labelId]="'crm.addresses.Inactive'"
+                        [name]="'inactive'"
+                        [readonly]="!canEdit()"
+                        [switchId]="'inactive'"
+                        [text]="'  '"></app-tess-switch>
+                </div>
+            </div>
+
+            <ng-container *ngIf="isModal">
+                <span class="block m-bot-15 font-black">{{ headerText }}</span>
+
+                <div class="divider"></div>
+
+                <div class="no-margin-bottom row m-top-15">
+                    <div class="col-md-3">
+                        <app-tess-switch
+                            [(ngModel)]="entity.Inactive"
+                            [labelId]="'crm.addresses.Inactive'"
+                            [name]="'inactive'"
+                            [readonly]="!canEdit()"
+                            [switchId]="'inactive'"
+                            [text]="'  '"></app-tess-switch>
+                    </div>
+                    <div class="col-md-3">
+                        <app-tess-switch
+                            [(ngModel)]="entity.PrimaryIndicator"
+                            [labelId]="'crm.addresses.PrimaryIndicator'"
+                            [name]="'PrimaryIndicator'"
+                            [readonly]="!canEdit()"
+                            [switchId]="'PrimaryIndicator'"
+                            [text]="'  '"></app-tess-switch>
+                    </div>
+                </div>
+            </ng-container>
+
+            <div class="divider"></div>
+
+            <div class="row m-top-30">
+                <app-tess-fieldset [readonly]="!canEdit()">
+                    <div class="row validated">
+                        <div [ngClass]="!isModal ? 'col-md-3' : 'col-md-12'">
+                            <app-tess-singleselect
+                                [(ngModel)]="entity.AddressType"
+                                [labelId]="'crm.addresses.AddressType'"
+                                [name]="'AddressType'"
+                                [options]="addressTypeSummaries"
+                                [required]="true"
+                                [settings]="settingsForSingle"></app-tess-singleselect>
+                        </div>
+                        <div class="col-md-2" *ngIf="!isModal">
+                            <app-tess-switch
+                                [(ngModel)]="entity.PrimaryIndicator"
+                                [labelId]="'crm.addresses.PrimaryIndicator'"
+                                [name]="'PrimaryIndicator'"
+                                [readonly]="!canEdit()"
+                                [switchId]="'PrimaryIndicator'"
+                                [text]="'  '"></app-tess-switch>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                    <div class="divider m-bot-30"></div>
+                    <div class="row validated">
+                        <div [ngClass]="!isModal ? 'col-md-5' : 'col-md-6'">
+                            <app-tess-singleselect
+                                [(ngModel)]="entity.AltSalutationType"
+                                [labelId]="'crm.addresses.AltSalutationType'"
+                                [name]="'alt-salutation'"
+                                [options]="salutationTypeSummaries"
+                                [settings]="settingsForSingle"
+                                [readonly]="!canEdit()"></app-tess-singleselect>
+                        </div>
+                        <div [ngClass]="!isModal ? 'col-md-7' : 'col-md-6'">
+                            <app-tess-textbox
+                                *ngIf="isModal"
+                                [ngModel]="getEntityConstituentDisplayName()"
+                                [labelId]="'crm.addresses.Owner'"
+                                [maxLength]="64"
+                                [name]="'owner'"
+                                [readonly]="true"></app-tess-textbox>
+                        </div>
+                    </div>
+                    <ng-container *ngFor="let o of streetOrder">
+                        <div *ngIf="o === 1" class="row validated">
+                            <div [ngClass]="!isModal ? 'col-md-7' : 'col-md-12'">
+                                <app-tessitura-address-verification
+                                    [attr.data-testid]="'street1-input'"
+                                    [ISO]="isoForSelectedCountry"
+                                    (addressManuallyEntered)="updateStreet1($event)"
+                                    (addressSelected)="addressAutoFormatted($event)"
+                                    [ngModel]="entity.Street1"
+                                    [labelId]="'crm.addresses.Street1'"
+                                    [name]="'Street1'"
+                                    [required]="true"
+                                    [readonly]="!canEdit()"></app-tessitura-address-verification>
+                            </div>
+                            <div *ngIf="!isModal" class="col-md-5"></div>
+                        </div>
+                        <div *ngIf="o === 2" class="row validated">
+                            <div [ngClass]="!isModal ? 'col-md-7' : 'col-md-12'">
+                                <app-tess-textbox
+                                    [(ngModel)]="entity.Street2"
+                                    [labelId]="'crm.addresses.Street2'"
+                                    [maxLength]="64"
+                                    [name]="'street2'"
+                                    [readonly]="!canEdit()"></app-tess-textbox>
+                            </div>
+                            <div class="col-md-5"></div>
+                        </div>
+                        <div *ngIf="useStreet3 !== 'No' && o === 3" class="row validated">
+                            <div [ngClass]="!isModal ? 'col-md-7' : 'col-md-12'">
+                                <app-tess-textbox
+                                    [(ngModel)]="entity.Street3"
+                                    [labelId]="'crm.addresses.Street3'"
+                                    [maxLength]="64"
+                                    [name]="'Street3'"
+                                    [readonly]="!canEdit()"></app-tess-textbox>
+                            </div>
+                            <div class="col-md-5"></div>
+                        </div>
+                    </ng-container>
+                    <div class="row validated">
+                        <div [ngClass]="!isModal ? 'col-md-4' : 'col-md-8'">
+                            <app-tess-textbox
+                                [(ngModel)]="entity.City"
+                                [labelId]="'crm.addresses.City'"
+                                [maxLength]="30"
+                                [name]="'city'"
+                                [required]="this.requiredCity"
+                                [readonly]="!canEdit()"></app-tess-textbox>
+                        </div>
+                        <div [ngClass]="!isModal ? 'col-md-3' : 'col-md-4'">
+                            <app-tess-singleselect
+                                [(ngModel)]="entity.State"
+                                [labelId]="'crm.addresses.Locale'"
+                                [name]="'locale'"
+                                [options]="filteredStateSummaries"
+                                [settings]="settingsForSingle"
+                                [disabled]="this.useStateField === 'N'"
+                                [required]="this.useStateField === 'Y'"
+                                [readonly]="!canEdit()"></app-tess-singleselect>
+                        </div>
+                        <div [ngClass]="!isModal ? 'col-md-2' : 'col-md-4'">
+                            <app-tess-masked
+                                [ngModel]="entity.PostalCode"
+                                (onChanged)="onPostalCodeChanged($event)"
+                                [labelId]="'crm.addresses.PostalCode'"
+                                [mask]="postalCodeMask"
+                                [name]="'PostalCode'"
+                                [required]="this.requiredPostalCode"
+                                [readonly]="!canEdit()"></app-tess-masked>
+                        </div>
+                        <div [ngClass]="!isModal ? 'col-md-3' : 'col-md-4'">
+                            <app-tess-singleselect
+                                [(ngModel)]="entity.Country"
+                                (onChanged)="countryChanged()"
+                                [labelId]="'crm.addresses.Country'"
+                                [name]="'Country'"
+                                [options]="countrySummaries"
+                                [settings]="settingsForSingle"
+                                [readonly]="!canEdit()"></app-tess-singleselect>
+                        </div>
+                    </div>
+                    <div class="divider m-bot-30"></div>
+                    <div class="radioList">
+                        <div>
+                            <div fxFlex="1 1 auto">
+                                <app-tess-radio-button
+                                    [attr.data-testid]="'allYear-radio'"
+                                    [(ngModel)]="radioButtonsModel"
+                                    [name]="'date'"
+                                    [showLabel]="false"
+                                    [id]="'allYear'"
+                                    [radioValue]="'Y'"
+                                    [readonly]="!canEdit()"></app-tess-radio-button>
+                            </div>
+                            <div fxFlex="100%" style="margin-bottom: 30px">
+                                <label>All Year</label>
+                            </div>
+                        </div>
+                        <div>
+                            <div fxFlex="1 1 auto">
+                                <app-tess-radio-button
+                                    [attr.data-testid]="'dates-radio'"
+                                    [(ngModel)]="radioButtonsModel"
+                                    [name]="'date'"
+                                    [showLabel]="false"
+                                    [id]="'dates'"
+                                    [radioValue]="'R'"
+                                    [readonly]="!canEdit()"></app-tess-radio-button>
+                            </div>
+                            <div fxFlex="100%">
+                                <div class="row">
+                                    <div [ngClass]="!isModal ? 'col-md-2' : 'col-md-4'">
+                                        <app-tess-date
+                                            [(ngModel)]="entity.StartDate"
+                                            [disabled]="radioButtonsModel !== 'R'"
+                                            [labelId]="'crm.addresses.StartDate'"
+                                            [name]="'StartDate'"
+                                            [readonly]="!canEdit()"
+                                            id="startDateAddress"></app-tess-date>
+                                    </div>
+                                    <div [ngClass]="!isModal ? 'col-md-2' : 'col-md-4'">
+                                        <app-tess-date
+                                            [(ngModel)]="entity.EndDate"
+                                            [disabled]="radioButtonsModel !== 'R'"
+                                            [labelId]="'crm.addresses.EndDate'"
+                                            [name]="'EndDate'"
+                                            [readonly]="!canEdit()"
+                                            id="endDateAddress"></app-tess-date>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="validated">
+                            <div fxFlex="1 1 auto">
+                                <app-tess-radio-button
+                                    [attr.data-testid]="'months-radio'"
+                                    [(ngModel)]="radioButtonsModel"
+                                    [name]="'dateSelectors'"
+                                    [showLabel]="false"
+                                    [id]="'months'"
+                                    [radioValue]="'M'"
+                                    [readonly]="!canEdit()"></app-tess-radio-button>
+                            </div>
+                            <div fxFlex="100%">
+                                <div class="row">
+                                    <div [ngClass]="!isModal ? 'col-md-12' : 'col-md-8'">
+                                        <app-tess-token
+                                            [attr.data-testid]="'months-token'"
+                                            [(ngModel)]="selectedMonths"
+                                            [disabled]="radioButtonsModel !== 'M'"
+                                            [sortOptions]="false"
+                                            [labelId]="'crm.addresses.Months'"
+                                            [name]="'Months'"
+                                            [options]="monthsOptions"
+                                            [readonly]="!canEdit()"
+                                            id="monthsToken"
+                                            name="monthsToken"></app-tess-token>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="divider m-bot-30"></div>
+                    <div class="row validated">
+                        <div class="col-md-12">
+                            <app-tess-token
+                                [attr.data-testid]="'purposes-token'"
+                                [(ngModel)]="selectedPurposeSummaries"
+                                [labelId]="'crm.addresses.ContactPointPurposes'"
+                                [name]="'Purposes'"
+                                [options]="contactPoints"
+                                [readonly]="!canEdit()"></app-tess-token>
+                        </div>
+                    </div>
+                </app-tess-fieldset>
+            </div>
+            <div *ngIf="entity.Id >= 0" class="row audit-row">
+                <div class="col-md-12">
+                    <app-audit [entity]="entity"></app-audit>
+                </div>
+            </div>
+        </div>
+    </form>
+</ng-template>
+<ng-template #actionsRow>
+    <app-tess-btn
+        [name]="'save-and-close'"
+        tabindex="0"
+        [isPrimary]="true"
+        (onClick)="saveConfirmed(null, true)"
+        [disabled]="!canSave(editForm)"
+        [labelId]="'Save & close'"
+        [labelIsEditable]="false">
+    </app-tess-btn>
+    <app-tess-btn
+        *ngIf="entity.Id !== -999"
+        [name]="'delete'"
+        tabindex="0"
+        [disabled]="!canDelete()"
+        (onClick)="deleteAddress(model.Address)"
+        [isPrimary]="false"
+        [labelId]="'Delete'"
+        [labelIsEditable]="false">
+    </app-tess-btn>
+    <app-tess-btn
+        [name]="'cancel'"
+        tabindex="0"
+        [isPrimary]="false"
+        (onClick)="cancel(false)"
+        [labelId]="'Cancel'"
+        [labelIsEditable]="false">
+    </app-tess-btn>
+</ng-template>

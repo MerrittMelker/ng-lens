@@ -11,7 +11,7 @@ export class ServiceUsageAnalyzer {
     for (const cls of classes) {
       this.analyzeClassMethods(cls, injectedServices, usage);
     }
-
+    
     return usage;
   }
 
@@ -40,10 +40,25 @@ export class ServiceUsageAnalyzer {
     const expr = callExpr.getExpression();
     if (!expr || expr.getKind() !== SyntaxKind.PropertyAccessExpression) return;
 
-    const serviceInstance = expr.getFirstChildByKind(SyntaxKind.Identifier)?.getText();
-    const methodName = expr.getLastChildByKind(SyntaxKind.Identifier)?.getText();
+    const propertyAccess = expr.asKind(SyntaxKind.PropertyAccessExpression);
+    if (!propertyAccess) return;
+
+    const leftSide = propertyAccess.getExpression();
+    const methodName = propertyAccess.getName();
+
+    let serviceInstance: string | undefined;
+    
+    if (leftSide.getKind() === SyntaxKind.PropertyAccessExpression) {
+      // Case: this.serviceInstance.method()
+      const thisPropertyAccess = leftSide.asKind(SyntaxKind.PropertyAccessExpression);
+      serviceInstance = thisPropertyAccess?.getName();
+    } else if (leftSide.getKind() === SyntaxKind.Identifier) {
+      // Case: serviceInstance.method()
+      serviceInstance = leftSide.getText();
+    }
 
     const serviceClass = serviceInstance && injectedServices[serviceInstance];
+    
     if (serviceClass && methodName) {
       if (!usage[serviceClass]) {
         usage[serviceClass] = new Set();

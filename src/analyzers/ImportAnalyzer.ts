@@ -26,16 +26,18 @@ export class ImportAnalyzer {
     const injectedServices: Record<string, string> = {};
     
     const classes = sourceFile.getClasses();
+    
     for (const cls of classes) {
       const constructor = cls.getConstructors()[0];
       if (!constructor) continue;
-
+      
       for (const param of constructor.getParameters()) {
-        const type = param.getType().getSymbol()?.getName();
+        const typeNode = param.getTypeNode();
+        const typeName = typeNode?.getText() || param.getType().getSymbol()?.getName();
         const varName = param.getName();
 
-        if (type && namedImports.has(type)) {
-          injectedServices[varName] = type;
+        if (typeName && namedImports.has(typeName)) {
+          injectedServices[varName] = typeName;
         }
       }
     }

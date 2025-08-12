@@ -33,7 +33,7 @@ export class ReportGenerator {
     return Object.fromEntries(
       Object.entries(serviceUsage).map(([serviceClass, methods]) => [
         serviceClass,
-        Array.from(methods as Set<string>)
+        Array.from(methods)
       ])
     );
   }
