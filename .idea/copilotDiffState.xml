@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/package.json">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/package.json" />
+              <option name="originalContent" value="{&#10;  &quot;name&quot;: &quot;angular-analyzer&quot;,&#10;  &quot;version&quot;: &quot;1.0.0&quot;,&#10;  &quot;type&quot;: &quot;commonjs&quot;,&#10;  &quot;scripts&quot;: {&#10;    &quot;start&quot;: &quot;ts-node src/index.ts&quot;&#10;  },&#10;  &quot;dependencies&quot;: {&#10;    &quot;ts-morph&quot;: &quot;^22.0.0&quot;&#10;  },&#10;  &quot;devDependencies&quot;: {&#10;    &quot;@types/node&quot;: &quot;^24.2.1&quot;,&#10;    &quot;ts-node&quot;: &quot;^10.9.1&quot;,&#10;    &quot;typescript&quot;: &quot;^5.0.0&quot;&#10;  }&#10;}&#10;" />
+              <option name="updatedContent" value="{&#10;  &quot;name&quot;: &quot;angular-analyzer&quot;,&#10;  &quot;version&quot;: &quot;1.0.0&quot;,&#10;  &quot;type&quot;: &quot;module&quot;,&#10;  &quot;scripts&quot;: {&#10;    &quot;start&quot;: &quot;ts-node src/index.ts&quot;&#10;  },&#10;  &quot;dependencies&quot;: {&#10;    &quot;ts-morph&quot;: &quot;^22.0.0&quot;&#10;  },&#10;  &quot;devDependencies&quot;: {&#10;    &quot;@types/node&quot;: &quot;^24.2.1&quot;,&#10;    &quot;ts-node&quot;: &quot;^10.9.1&quot;,&#10;    &quot;typescript&quot;: &quot;^5.0.0&quot;&#10;  }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/tsconfig.json">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/tsconfig.json" />
+              <option name="originalContent" value="{&#10;  &quot;compilerOptions&quot;: {&#10;    &quot;target&quot;: &quot;ES2020&quot;,&#10;    &quot;module&quot;: &quot;ESNext&quot;,&#10;    &quot;moduleResolution&quot;: &quot;Node&quot;,&#10;    &quot;esModuleInterop&quot;: true,&#10;    &quot;forceConsistentCasingInFileNames&quot;: true,&#10;    &quot;skipLibCheck&quot;: true,&#10;    &quot;strict&quot;: true&#10;  },&#10;  &quot;include&quot;: [&quot;src&quot;]&#10;}&#10;" />
+              <option name="updatedContent" value="{&#10;  &quot;compilerOptions&quot;: {&#10;    &quot;target&quot;: &quot;ES2020&quot;,&#10;    &quot;module&quot;: &quot;ESNext&quot;,&#10;    &quot;moduleResolution&quot;: &quot;Node&quot;,&#10;    &quot;esModuleInterop&quot;: true,&#10;    &quot;allowSyntheticDefaultImports&quot;: true,&#10;    &quot;forceConsistentCasingInFileNames&quot;: true,&#10;    &quot;skipLibCheck&quot;: true,&#10;    &quot;strict&quot;: true&#10;  },&#10;  &quot;include&quot;: [&quot;src&quot;],&#10;  &quot;ts-node&quot;: {&#10;    &quot;esm&quot;: true&#10;  }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
