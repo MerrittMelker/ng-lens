@@ -1,4 +1,4 @@
-# Angular Analyzer
+# NgLens
 
 This Node.js utility uses [ts-morph](https://github.com/dsherret/ts-morph) to statically analyze Angular TypeScript components and identify service usage patterns from any specified API library. It detects constructor dependency injection and tracks which service methods are actually called within component code.
 
@@ -49,7 +49,7 @@ const analyzer = new AngularAnalyzer({
 ```json
 {
   "UserProfileComponent": {
-    "file": "C:/Repo/angular-analyzer/sample/user-profile.component.ts",
+    "file": "C:/Repo/ng-lens/sample/user-profile.component.ts",
     "services": {
       "UserService": [
         "GetProfile",
@@ -73,7 +73,7 @@ const analyzer = new AngularAnalyzer({
     }
   },
   "ProductEditComponent": {
-    "file": "C:/Repo/angular-analyzer/sample/product-edit.component.ts",
+    "file": "C:/Repo/ng-lens/sample/product-edit.component.ts",
     "services": {
       "ProductService": [
         "GetById",
@@ -110,7 +110,7 @@ const analyzer = new AngularAnalyzer({
 
 ## 🏗️ Architecture
 
-The analyzer uses a clean, class-based architecture following Single Responsibility Principle:
+NgLens uses a clean, class-based architecture following Single Responsibility Principle:
 
 - **`AngularAnalyzer`**: Main orchestrator coordinating all analysis
 - **`ImportAnalyzer`**: Detects imports from target modules and constructor injection
@@ -134,14 +134,15 @@ See [CHANGELOG.md](./CHANGELOG.md) for detailed development history, technical d
 src/
 ├── AngularAnalyzer.ts           # Main orchestrator
 ├── index.ts                     # Entry point
+├── test-runner.ts               # Basic test harness
 └── analyzers/
     ├── ImportAnalyzer.ts        # Import & injection detection
     ├── ServiceUsageAnalyzer.ts  # Method call analysis
     └── ReportGenerator.ts       # Output formatting
 sample/                          # Test files
-├── user-profile.component.ts    # Complex component with multiple services
-├── product-edit.component.ts    # Advanced component with CRUD operations
-└── dashboard.component.ts       # Simple component with basic API usage
+├── user-profile.component.ts    # Component with multiple services
+├── address-edit.component.ts    # Component with CRUD-like operations
+└── crm.component.ts             # Component with API interactions
 ```
 
 ## 🔧 Development

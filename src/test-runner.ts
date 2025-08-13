@@ -1,11 +1,8 @@
 ﻿// Test runner to validate all analyzer functionality
 import { AngularAnalyzer } from './AngularAnalyzer.js';
-import { ImportAnalyzer } from './analyzers/ImportAnalyzer.js';
-import { ServiceUsageAnalyzer } from './analyzers/ServiceUsageAnalyzer.js';
-import { ReportGenerator } from './analyzers/ReportGenerator.js';
 
 async function runValidationTests() {
-    console.log('🧪 Running Angular Analyzer Validation Tests...\n');
+    console.log('🧪 Running NgLens Validation Tests...\n');
     
     let passedTests = 0;
     let totalTests = 0;
@@ -22,7 +19,10 @@ async function runValidationTests() {
 
     try {
         // Test 1: Basic analyzer instantiation
-        const analyzer = new AngularAnalyzer();
+        const analyzer = new AngularAnalyzer({
+            targetModule: "your-api-module",
+            sourcePattern: "sample/**/*.ts"
+        });
         test("AngularAnalyzer instantiation", analyzer !== undefined);
 
         // Test 2: Analyze sample files (using generic API module)
@@ -30,11 +30,11 @@ async function runValidationTests() {
         test("Analysis completes without errors", results !== undefined);
 
         // Test 3: Check that results contain expected component
-        const hasAddressEditComponent = 'AddressEditComponent' in results;
-        test("Finds AddressEditComponent", hasAddressEditComponent);
+        const hasProductEditComponent = 'ProductEditComponent' in results;
+        test("Finds ProductEditComponent", hasProductEditComponent);
 
-        if (hasAddressEditComponent) {
-            const component = results.AddressEditComponent;
+        if (hasProductEditComponent) {
+            const component = results.ProductEditComponent;
             
             // Test 4: Component has file path
             test("Component has file path", component.file !== undefined);

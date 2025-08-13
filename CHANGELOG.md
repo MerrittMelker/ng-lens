@@ -1,7 +1,12 @@
-﻿# Angular Analyzer - Development Changelog
+﻿# NgLens - Development Changelog
 
 ## Project Overview
 This project analyzes Angular TypeScript components to track usage of services from any specified API library. It identifies which services are injected into component constructors and tracks which methods are called on those services.
+
+## Rename to NgLens (August 13, 2025)
+- Project renamed from "Angular Analyzer" to "NgLens" to improve brand clarity and future-proofing
+- Documentation updated: README and this changelog
+- Package name updated in package.json
 
 ## Architecture Refactoring (August 12, 2025)
 
@@ -95,7 +100,7 @@ Created 4 focused classes following Single Responsibility Principle:
 ```json
 {
   "UserProfileComponent": {
-    "file": "C:/Repo/angular-analyzer/sample/user-profile.component.ts",
+    "file": "C:/Repo/ng-lens/sample/user-profile.component.ts",
     "services": {
       "UserService": ["GetProfile", "UpdateProfile", "GetPreferences"],
       "AuthService": ["ValidateToken", "RefreshToken", "Logout"],
