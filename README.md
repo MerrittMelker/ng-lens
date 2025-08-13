@@ -54,16 +54,54 @@ const analyzer = new AngularAnalyzer({
       "UserService": [
         "GetProfile",
         "UpdateProfile", 
-        "GetPreferences"
+        "Delete",
+        "RefreshCache",
+        "ExportData"
       ],
-      "AuthService": [
-        "ValidateToken",
-        "RefreshToken",
-        "Logout"
+      "ProductService": [
+        "GetByUser",
+        "RefreshCache"
+      ],
+      "OrderService": [
+        "GetRecent"
       ],
       "NotificationService": [
-        "GetUnread",
-        "MarkAsRead"
+        "ShowError",
+        "ShowSuccess",
+        "ShowInfo"
+      ]
+    }
+  },
+  "ProductEditComponent": {
+    "file": "C:/Repo/angular-analyzer/sample/product-edit.component.ts",
+    "services": {
+      "ProductService": [
+        "GetById",
+        "Create", 
+        "Update",
+        "Delete",
+        "Validate"
+      ],
+      "CategoryService": [
+        "GetAll",
+        "RefreshCache"
+      ],
+      "InventoryService": [
+        "GetByProduct",
+        "Update",
+        "Remove"
+      ],
+      "ReviewService": [
+        "GetByProduct",
+        "DeleteByProduct"
+      ],
+      "PricingService": [
+        "GetDefaults",
+        "GetByProduct",
+        "Update"
+      ],
+      "ShippingService": [
+        "Calculate"
       ]
     }
   }
@@ -101,8 +139,9 @@ src/
     ├── ServiceUsageAnalyzer.ts  # Method call analysis
     └── ReportGenerator.ts       # Output formatting
 sample/                          # Test files
-├── address-edit.component.ts    # Sample component with API usage
-└── crm.component.ts            # Sample component without API usage
+├── user-profile.component.ts    # Complex component with multiple services
+├── product-edit.component.ts    # Advanced component with CRUD operations
+└── dashboard.component.ts       # Simple component with basic API usage
 ```
 
 ## 🔧 Development

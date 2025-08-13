@@ -1,38 +1,47 @@
-import { ConstituentNavigationComponent } from '../shell/constituent-navigation/constituent-navigation.component';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { DesignVariables } from '../shared/utils/DesignVariables';
-import { AppLinkService } from '../core/services/app-link.service';
-import { HeaderCommunicationService } from '../shared/services/header-communication.service';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import {
+    DashboardService,
+    AnalyticsService,
+    IDashboardData,
+    IAnalytics
+} from 'your-api-module';
 
 @Component({
-    selector: 'app-crm',
-    templateUrl: './crm.component.html',
-    styleUrls: ['./crm.component.scss']
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss']
 })
-export class CRMComponent implements OnInit, OnDestroy {
-
-    hideMenuPanel = false;
-    headerHeight = '0px';
-    @ViewChild('constituentNavigation', {static: true}) constituentNavigation: ConstituentNavigationComponent;
-    private headerCommSubscription: Subscription;
+export class DashboardComponent implements OnInit {
+    dashboardData: IDashboardData;
+    analytics: IAnalytics;
+    isLoading = true;
 
     constructor(
-        private router: Router,
-        public appLinkService: AppLinkService,
-        private headerCommunicationService: HeaderCommunicationService,
-        public designVariables: DesignVariables) {
+        private dashboardService: DashboardService,
+        private analyticsService: AnalyticsService
+    ) {}
 
+    ngOnInit() {
+        this.loadDashboard();
+        this.loadAnalytics();
     }
 
-    public ngOnInit() {
-        this.headerCommSubscription = this.headerCommunicationService.collapsed$.subscribe(() => {
-            this.hideMenuPanel = !this.hideMenuPanel;
+    loadDashboard() {
+        this.dashboardService.GetData().subscribe(data => {
+            this.dashboardData = data;
+            this.isLoading = false;
         });
     }
 
-    ngOnDestroy(): void {
-        this.headerCommSubscription?.unsubscribe();
+    loadAnalytics() {
+        this.analyticsService.GetSummary().subscribe(analytics => {
+            this.analytics = analytics;
+        });
+    }
+
+    refreshData() {
+        this.isLoading = true;
+        this.dashboardService.RefreshCache();
+        this.loadDashboard();
     }
 }
