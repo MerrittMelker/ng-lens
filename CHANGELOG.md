@@ -1,7 +1,7 @@
 ﻿# Angular Analyzer - Development Changelog
 
 ## Project Overview
-This project analyzes Angular TypeScript components to track usage of services from the "tn-api" library. It identifies which services are injected into component constructors and tracks which methods are called on those services.
+This project analyzes Angular TypeScript components to track usage of services from any specified API library. It identifies which services are injected into component constructors and tracks which methods are called on those services.
 
 ## Architecture Refactoring (August 12, 2025)
 
@@ -34,7 +34,7 @@ Created 4 focused classes following Single Responsibility Principle:
 ##### **ImportAnalyzer** (`src/analyzers/ImportAnalyzer.ts`)
 - **Responsibility**: Detect imports from target modules and constructor injection
 - **Key Methods**:
-  - `analyzeImports()`: Finds imports from "tn-api"
+  - `analyzeImports()`: Finds imports from your specified API library
   - `analyzeConstructorInjection()`: Maps injected services to variable names
 - **Bug Fixed**: Used `param.getTypeNode()?.getText()` instead of `param.getType().getSymbol()?.getName()` to properly extract parameter types
 
@@ -86,25 +86,21 @@ Created 4 focused classes following Single Responsibility Principle:
 ## Current Functionality
 
 ### What It Analyzes
-- ✅ Imports from "tn-api" module
-- ✅ Constructor dependency injection of tn-api services
-- ✅ Method calls on injected services (e.g., `this.countriesService.GetDefault()`)
+- ✅ Imports from any specified API module
+- ✅ Constructor dependency injection of API services
+- ✅ Method calls on injected services (e.g., `this.userService.GetProfile()`)
 - ✅ Supports both `this.service.method()` and `service.method()` patterns
 
 ### Sample Output
 ```json
 {
-  "AddressEditComponent": {
-    "file": "C:/Repo/angular-analyzer/sample/address-edit.component.ts",
+  "UserProfileComponent": {
+    "file": "C:/Repo/angular-analyzer/sample/user-profile.component.ts",
     "services": {
-      "CountriesService": ["GetDefault", "Get", "GetSummaries"],
-      "AddressesService": ["Get", "Delete", "Create", "Update"],
-      "ContactPointPurposeMapsService": ["GetAll", "Create", "Delete"],
-      "SalutationsService": ["GetAll"],
-      "StatesService": ["GetSummaries"],
-      "AddressTypesService": ["GetSummaries"],
-      "ContactPointCategoryPurposesService": ["GetAll"],
-      "PostalCodeLookupsService": ["GetResults"]
+      "UserService": ["GetProfile", "UpdateProfile", "GetPreferences"],
+      "AuthService": ["ValidateToken", "RefreshToken", "Logout"],
+      "NotificationService": ["GetUnread", "MarkAsRead"],
+      "SettingsService": ["GetUserSettings", "SaveSettings"]
     }
   }
 }
@@ -157,7 +153,7 @@ src/
 ## Configuration
 
 ### Current Default Configuration
-- **Target Module**: "tn-api"
+- **Target Module**: "your-api-module" (configurable)
 - **Source Pattern**: "sample/**/*.ts"
 - **Output Format**: JSON to console
 
@@ -178,7 +174,7 @@ npm start
 
 ### Expected behavior:
 - Analyzes all .ts files in the sample/ directory
-- Finds components with "tn-api" service injection
+- Finds components with API service injection
 - Reports method usage for each service
 - Outputs clean JSON format
 

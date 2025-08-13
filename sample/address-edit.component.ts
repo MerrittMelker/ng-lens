@@ -18,7 +18,7 @@ import {
     PostalCodeLookupsService,
     SalutationsService,
     StatesService,
-} from 'tn-api';
+} from 'your-api-module';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Params, Router, RouterStateSnapshot } from '@angular/router';
 import { Title } from '@angular/platform-browser';

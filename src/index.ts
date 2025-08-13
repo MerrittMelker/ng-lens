@@ -1,8 +1,8 @@
 import { AngularAnalyzer } from "./AngularAnalyzer.js";
 
-// Create analyzer with default configuration
+// Create analyzer with configurable target module
 const analyzer = new AngularAnalyzer({
-  targetModule: "tn-api",
+  targetModule: "your-api-module", // Configure this for your specific API library
   sourcePattern: "sample/**/*.ts"
 });
 

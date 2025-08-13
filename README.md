@@ -1,10 +1,10 @@
 # Angular Analyzer
 
-This Node.js utility uses [ts-morph](https://github.com/dsherret/ts-morph) to statically analyze Angular TypeScript components and identify service usage patterns from the "tn-api" library. It detects constructor dependency injection and tracks which service methods are actually called within component code.
+This Node.js utility uses [ts-morph](https://github.com/dsherret/ts-morph) to statically analyze Angular TypeScript components and identify service usage patterns from any specified API library. It detects constructor dependency injection and tracks which service methods are actually called within component code.
 
 ## 🚀 Features
 
-- **Service Injection Detection**: Identifies services from "tn-api" injected via Angular constructor dependency injection
+- **Service Injection Detection**: Identifies services from your API library injected via Angular constructor dependency injection
 - **Method Usage Tracking**: Analyzes component methods to track which service methods are actually called
 - **Scalable Architecture**: Class-based design ready for analyzing 1000+ files
 - **JSON Output**: Clean, structured output perfect for integration with other tools
@@ -39,7 +39,7 @@ You can customize the analyzer by modifying `src/index.ts`:
 
 ```typescript
 const analyzer = new AngularAnalyzer({
-  targetModule: "your-api-module",  // Default: "tn-api"
+  targetModule: "your-api-module",  // Specify your API library name
   sourcePattern: "src/**/*.ts"      // Default: "sample/**/*.ts"
 });
 ```
@@ -48,27 +48,22 @@ const analyzer = new AngularAnalyzer({
 
 ```json
 {
-  "AddressEditComponent": {
-    "file": "C:/Repo/angular-analyzer/sample/address-edit.component.ts",
+  "UserProfileComponent": {
+    "file": "C:/Repo/angular-analyzer/sample/user-profile.component.ts",
     "services": {
-      "CountriesService": [
-        "GetDefault",
-        "Get", 
-        "GetSummaries"
+      "UserService": [
+        "GetProfile",
+        "UpdateProfile", 
+        "GetPreferences"
       ],
-      "AddressesService": [
-        "Get",
-        "Delete",
-        "Create", 
-        "Update"
+      "AuthService": [
+        "ValidateToken",
+        "RefreshToken",
+        "Logout"
       ],
-      "ContactPointPurposeMapsService": [
-        "GetAll",
-        "Create",
-        "Delete"
-      ],
-      "SalutationsService": [
-        "GetAll"
+      "NotificationService": [
+        "GetUnread",
+        "MarkAsRead"
       ]
     }
   }
@@ -106,8 +101,8 @@ src/
     ├── ServiceUsageAnalyzer.ts  # Method call analysis
     └── ReportGenerator.ts       # Output formatting
 sample/                          # Test files
-├── address-edit.component.ts    # Sample component with tn-api usage
-└── crm.component.ts            # Sample component without tn-api usage
+├── address-edit.component.ts    # Sample component with API usage
+└── crm.component.ts            # Sample component without API usage
 ```
 
 ## 🔧 Development
