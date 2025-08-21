@@ -1,8 +1,10 @@
 ﻿// Test runner to validate all analyzer functionality
 import { AngularAnalyzer } from './AngularAnalyzer.js';
+import { Project } from 'ts-morph';
+import { RoutingAnalyzer } from './analyzers/RoutingAnalyzer.js';
 
 async function runValidationTests() {
-    console.log('🧪 Running NgLens Validation Tests...\n');
+    console.log('🪪 Running NgLens Validation Tests...\n');
     
     let passedTests = 0;
     let totalTests = 0;
@@ -61,6 +63,30 @@ async function runValidationTests() {
             sourcePattern: "sample/**/*.ts"
         });
         test("Custom configuration accepted", customAnalyzer !== undefined);
+
+        // Routing Analyzer tests
+        const project = new Project();
+        const sourceFile = project.addSourceFileAtPath('sample/crm-routing.module.ts');
+        const routingAnalyzer = new RoutingAnalyzer();
+        const routeEntries = routingAnalyzer.analyzeFile(sourceFile);
+
+        test("RoutingAnalyzer finds entries", routeEntries.length > 0);
+
+        const searchRoute = routeEntries.find(r => r.component === 'ConstituentSearchComponent');
+        test("Finds ConstituentSearch route", !!searchRoute);
+        if (searchRoute) {
+            test("ConstituentSearch has menuId", searchRoute.menuId.includes('MenuEntries.ConstituentSearch'));
+            test("ConstituentSearch full path is 'search'", searchRoute.fullPath === 'search');
+            test("ConstituentSearch import path captured", !!searchRoute.importPath && searchRoute.importPath.includes('./constituent-search/constituent-search.component'));
+        }
+
+        const addressesRoute = routeEntries.find(r => r.component === 'AddressesComponent');
+        test("Finds Addresses route", !!addressesRoute);
+        if (addressesRoute) {
+            test("Addresses has menuId", addressesRoute.menuId.includes('MenuEntries.Addresses'));
+            test("Addresses full path includes constituentId", addressesRoute.fullPath === 'constituents/:constituentId/addresses');
+            test("Addresses import path captured", !!addressesRoute.importPath && addressesRoute.importPath.includes('./constituent-detail/addresses/addresses.component'));
+        }
 
         console.log(`\n📊 Test Results: ${passedTests}/${totalTests} tests passed`);
         

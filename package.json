@@ -15,7 +15,8 @@
     "start": "ts-node src/index.ts",
     "test": "npm run test:basic && npm run test:validation",
     "test:basic": "echo 'Running basic analysis test...' && ts-node src/index.ts",
-    "test:validation": "echo 'Running validation tests...' && ts-node src/test-runner.ts"
+    "test:validation": "echo 'Running validation tests...' && ts-node src/test-runner.ts",
+    "scan:routes": "ts-node src/route-scan.ts"
   },
   "dependencies": {
     "ts-morph": "^22.0.0"

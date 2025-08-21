@@ -1,5 +1,18 @@
 ﻿# NgLens - Development Changelog
 
+## Update: Routing analysis and validation suite (August 21, 2025)
+- Added RoutingAnalyzer to parse Angular routing modules and extract:
+  - component
+  - fullPath (including nested segments and params)
+  - data.menuId
+  - importPath (relative import for the component)
+- New CLI script `src/route-scan.ts` and npm script `scan:routes` to print routing entries.
+- Validation tests expanded to cover routing analysis; all tests currently pass (18/18 in test-runner output).
+- Docs updated:
+  - README: route scan usage, project structure, troubleshooting for Windows shim files.
+  - CONTEXT: current status, scripts list, cross-link tips, Windows notes.
+- Windows note: If `npm install` was run with `--prefix` on Windows, npm may drop command shims (e.g., `acorn`, `ts-node.ps1`, `tsc.cmd`) in the repo root. They duplicate `node_modules/.bin/*` and can be deleted. `.gitignore` updated to prevent these from being committed.
+
 ## Project Overview
 This project analyzes Angular TypeScript components to track usage of services from any specified API library. It identifies which services are injected into component constructors and tracks which methods are called on those services.
 
